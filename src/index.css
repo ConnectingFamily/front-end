@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Pretendard", ui-sans-serif, system-ui, sans-serif;
+
+  --color-main: oklch(0.7627 0.156 50.21);
+  --color-sub-1: oklch(0.9703 0.0205 67.58);
+  --color-sub-2: oklch(0.9438 0.0385 66.08);
+  --color-bg: oklch(0.9994 0.0026 106.45);
+  --color-outline: oklch(0.9249 0 0);
+  --color-disabled: oklch(0.937 0 0);
+  --color-text: oklch(0.3932 0.0243 59.56);
+  --color-sub-text: oklch(0.606 0.0142 56.11);
+  --color-error: oklch(0.637 0.2061 30.85);
+}
+
+:root {
+  color-scheme: light dark;
+  background-color: #fffffd;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  max-width: 390px;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+.title {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 18pt;
+  line-height: 1.4;
+}
+
+.label-bold {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 16pt;
+}
+
+.label {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16pt;
+  line-height: 1.4;
+}
+
+.body-bold {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 14pt;
+}
+
+.body {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14pt;
+  line-height: 1.4;
+}
+
+.caption {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 12pt;
+}
+
+button {
+  color: #ffffff;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  padding: 11.5px;
+  font-size: 18px;
+  font-weight: 800;
+  font-family: inherit;
+  background-color: #ff914d;
+  cursor: pointer;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.12);
+}
+button:disabled {
+  background-color: #f2ece9;
+}
