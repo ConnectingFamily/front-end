@@ -33,8 +33,9 @@ body {
 
 :root {
   background-color: #fffffd;
+  color: #504339;
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  text-rendering: opximizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -52,40 +53,40 @@ p {
 .title {
   font-family: var(--font-family);
   font-weight: 700;
-  font-size: 18pt;
+  font-size: 18px;
   line-height: 1.4;
 }
 
 .label-bold {
   font-family: var(--font-family);
   font-weight: 700;
-  font-size: 16pt;
+  font-size: 16px;
 }
 
 .label {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 16pt;
+  font-size: 16px;
   line-height: 1.4;
 }
 
 .body-bold {
   font-family: var(--font-family);
   font-weight: 700;
-  font-size: 14pt;
+  font-size: 14px;
 }
 
 .body {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 14pt;
+  font-size: 14px;
   line-height: 1.4;
 }
 
 .caption {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 12pt;
+  font-size: 12px;
 }
 
 button {
@@ -99,4 +100,10 @@ button {
 }
 button:disabled {
   background-color: #f2ece9;
+}
+
+::-webkit-scrollbar {
+  display: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
