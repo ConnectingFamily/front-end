@@ -1,30 +1,39 @@
 interface CommonButtonProps {
   textColor?: string;
   bgColor?: string;
+  border?: string;
+  shadow?: boolean;
   label: string;
   img?: string;
   className?: string;
   width?: string;
   padding?: string;
+  onClick?: () => void;
 }
 const CommonButton = ({
   textColor,
   bgColor,
+  border,
+  shadow = false,
   label,
   className,
   width,
   img,
   padding,
+  onClick,
 }: CommonButtonProps) => {
   return (
     <button
+      onClick={onClick}
       className={`
         ${textColor ? textColor : "text-[#ffffff]"} 
         ${bgColor ? bgColor : "bg-[#ff914d]"}
+        ${border}
+        ${shadow ? "shadow-[0_2px_2px_rgba(0,0,0,0.12)]" : ""}
         ${width ? width : "w-full"}
         ${padding ? padding : "p-[11.5px]"}
         ${className}
-        flex flex-row
+        flex flex-row items-center justify-center
         `}
     >
       {label}
