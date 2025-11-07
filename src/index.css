@@ -97,7 +97,7 @@ button {
   cursor: pointer;
 }
 button:disabled {
-  background-color: #f2ece9;
+  background-color: #E2DFDB;
 }
 
 ::-webkit-scrollbar {
