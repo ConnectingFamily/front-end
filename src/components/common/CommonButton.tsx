@@ -9,6 +9,7 @@ interface CommonButtonProps {
   width?: string;
   padding?: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 const CommonButton = ({
   textColor,
@@ -21,10 +22,12 @@ const CommonButton = ({
   img,
   padding,
   onClick,
+  disabled = false,
 }: CommonButtonProps) => {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={`
         ${textColor ? textColor : "text-[#ffffff]"} 
         ${bgColor ? bgColor : "bg-[#ff914d]"}
@@ -34,6 +37,7 @@ const CommonButton = ({
         ${padding ? padding : "p-[11.5px]"}
         ${className}
         flex flex-row items-center justify-center
+        ${disabled ? "cursor-not-allowed" : ""}
         `}
     >
       {label}
