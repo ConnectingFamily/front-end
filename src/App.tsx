@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Layout from "./components/layout/Layout";
@@ -13,6 +13,8 @@ import DailyQuestion from "./pages/DailyQuestion";
 import Answer from "./pages/Answer";
 import AIFeedback from "./pages/AIFeedback";
 import My from "./pages/My";
+import Noti from "./pages/Noti";
+import Menu from "./pages/Menu";
 
 const App = () => {
   return (
@@ -49,6 +51,14 @@ const App = () => {
 
           {/* my page */}
           <Route path="/my-page" element={<My />} />
+
+          {/* notification */}
+          <Route path="/noti" element={<Noti />} />
+          {/* hamburger */}
+          <Route path="/menu" element={<Menu />} />
+
+          {/* fallback */}
+          <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </Layout>
     </BrowserRouter>
