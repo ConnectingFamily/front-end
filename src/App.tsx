@@ -13,6 +13,8 @@ import DailyQuestion from "./pages/DailyQuestion";
 import Answer from "./pages/Answer";
 import AIFeedback from "./pages/AIFeedback";
 import My from "./pages/My";
+import Noti from "./pages/Noti";
+import Menu from "./pages/Menu";
 
 const App = () => {
   return (
@@ -49,6 +51,11 @@ const App = () => {
 
           {/* my page */}
           <Route path="/my-page" element={<My />} />
+
+          {/* notification */}
+          <Route path="/noti" element={<Noti />} />
+          {/* hamburger */}
+          <Route path="/menu" element={<Menu />} />
         </Routes>
       </Layout>
     </BrowserRouter>
