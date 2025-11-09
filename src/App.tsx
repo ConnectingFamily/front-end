@@ -9,6 +9,9 @@ import OnboardJoinConfirm from "./pages/OnboardJoinConfirm";
 import OnboardProfile from "./pages/OnboardProfile";
 import OnboardCreate from "./pages/OnboardCreate";
 import OnboardCreateComplete from "./pages/OnboardCreateComplete";
+import DailyQuestion from "./pages/DailyQuestion";
+import Answer from "./pages/Answer";
+import AIFeedback from "./pages/AIFeedback";
 
 const App = () => {
   return (
@@ -32,9 +35,12 @@ const App = () => {
           {/* home */}
           <Route path="/home" element={<Home />} />
 
-          {/* today question */}
-
+          {/* daily question */}
+          <Route path="/daily-question" element={<DailyQuestion />} />
           {/* answer */}
+          <Route path="/answer" element={<Answer />} />
+          {/* ai feedback */}
+          <Route path="/ai-feedback" element={<AIFeedback />} />
         </Routes>
       </Layout>
     </BrowserRouter>

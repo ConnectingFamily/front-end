@@ -25,7 +25,7 @@ const SubHeader = ({
   };
 
   return (
-    <div className="w-full bg-bg flex flex-col">
+    <div className="w-full flex flex-col">
       <div className="flex flex-row items-center justify-between h-[44px] px-[20px] py-[10px]">
         {/* 뒤로가기 버튼 */}
         <button onClick={handleBack} className="flex items-center">
