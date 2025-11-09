@@ -15,7 +15,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     "/onboard/profile",
     "/answer",
     "/ai-feedback",
-    "/calendar",
     "/answered-questions",
   ];
   const shouldHideLayout = hideLayoutPages.includes(location.pathname);
