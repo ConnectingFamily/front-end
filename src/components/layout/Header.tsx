@@ -4,14 +4,14 @@ const Header = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full flex flex-row justify-between h-[44px] px-[20px] py-[10px]">
+    <div className="w-full flex flex-row justify-between items-center h-[44px] px-[20px] py-[10px]">
       {/* logo */}
-      <div
-        className="font-aggro text-[#FE7171] font-black text-xl"
+      <img
+        src="/icon/logo.webp"
+        alt="logo"
         onClick={() => navigate("/home")}
-      >
-        이심전심
-      </div>
+        className="w-[85px] h-[18px]"
+      />
 
       {/* noti & hamburger */}
       <div className="flex flex-row gap-x-2">
