@@ -12,6 +12,7 @@ import OnboardCreateComplete from "./pages/OnboardCreateComplete";
 import DailyQuestion from "./pages/DailyQuestion";
 import Answer from "./pages/Answer";
 import AIFeedback from "./pages/AIFeedback";
+import My from "./pages/My";
 
 const App = () => {
   return (
@@ -25,13 +26,17 @@ const App = () => {
           {/* onboard */}
           <Route path="/onboard" element={<Onboard />} />
           <Route path="/onboard/join" element={<OnboardJoin />} />
-          <Route path="/onboard/join/confirm" element={<OnboardJoinConfirm />} />
+          <Route
+            path="/onboard/join/confirm"
+            element={<OnboardJoinConfirm />}
+          />
           <Route path="/onboard/create" element={<OnboardCreate />} />
           <Route
             path="/onboard/create/complete"
             element={<OnboardCreateComplete />}
           />
           <Route path="/onboard/profile" element={<OnboardProfile />} />
+
           {/* home */}
           <Route path="/home" element={<Home />} />
 
@@ -41,6 +46,9 @@ const App = () => {
           <Route path="/answer" element={<Answer />} />
           {/* ai feedback */}
           <Route path="/ai-feedback" element={<AIFeedback />} />
+
+          {/* my page */}
+          <Route path="/my-page" element={<My />} />
         </Routes>
       </Layout>
     </BrowserRouter>
