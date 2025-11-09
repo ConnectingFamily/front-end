@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { LevelItem } from "../../constants/home";
 import CommonButton from "../common/CommonButton";
 import DOMPurify from "dompurify";
@@ -8,6 +9,8 @@ interface GradientBoxProps {
 }
 
 const GradientBox = ({ questionDummy, descDummy }: GradientBoxProps) => {
+  const navigate = useNavigate();
+
   return (
     <div
       className="min-h-[380px]
@@ -42,6 +45,7 @@ const GradientBox = ({ questionDummy, descDummy }: GradientBoxProps) => {
         />
         {/* ans btn */}
         <CommonButton
+          onClick={() => navigate("/answer")}
           label="답변하러 가기"
           img="/icon/next.svg"
           className="body-bold"

@@ -2,6 +2,14 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 @import url("https://cdn.jsdelivr.net/gh/ungveloper/web-fonts/SBAggro/font-family.css");
 
+@font-face {
+  font-family: "HsJandari";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2510-2@1.0/HSJandari.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: "Pretendard Variable", Pretendard, -apple-system,
     BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
@@ -21,6 +29,10 @@
 
 .font-aggro {
   font-family: "SBAggro", "Pretendard Variable", sans-serif;
+}
+
+.font-jandari {
+  font-family: "HsJandari", "Pretendard Variable", sans-serif;
 }
 
 body {
@@ -97,7 +109,7 @@ button {
   cursor: pointer;
 }
 button:disabled {
-  background-color: #E2DFDB;
+  background-color: #e2dfdb;
 }
 
 ::-webkit-scrollbar {
