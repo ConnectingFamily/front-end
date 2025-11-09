@@ -16,18 +16,18 @@ export const footerItem: FooterItemType[] = [
     label: "하트박스",
     src: "/icon/heartBox.svg",
     activeSrc: "/icon/heartBoxActive.svg",
-    path: "/home",
+    path: "/daily-question",
   },
   {
     label: "달력",
     src: "/icon/calendar.svg",
     activeSrc: "/icon/calendarActive.svg",
-    path: "/home",
+    path: "/calendar",
   },
   {
     label: "마이페이지",
     src: "/icon/my.svg",
     activeSrc: "/icon/myActive.svg",
-    path: "/home",
+    path: "/my-page",
   },
 ];
