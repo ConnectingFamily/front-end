@@ -6,7 +6,7 @@ import CommonModal from "../components/common/CommonModal";
 
 const Home = () => {
   const [modalMsg, _setModalMsg] = useState<string>("");
-  const [modalOpen, setModalOpen] = useState<boolean>(true);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const descDummy = "앞으로 마음 115개 더 모으면 가족 레벨이 올라요.";
   const questionDummy =
