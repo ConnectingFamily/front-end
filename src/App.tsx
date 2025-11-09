@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Layout from "./components/layout/Layout";
@@ -56,6 +56,9 @@ const App = () => {
           <Route path="/noti" element={<Noti />} />
           {/* hamburger */}
           <Route path="/menu" element={<Menu />} />
+
+          {/* fallback */}
+          <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </Layout>
     </BrowserRouter>
