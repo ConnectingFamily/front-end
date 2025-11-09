@@ -478,7 +478,7 @@ const DailyQuestion = () => {
                   {/* 이모지 버튼 */}
                   <button 
                     onClick={handleEmojiToggle}
-                    className="w-[24px] h-[24px] flex items-center justify-center flex-shrink-0 my-auto"
+                    className="w-[24px] h-[24px] flex items-center justify-center flex-shrink-0 my-auto focus:outline-none"
                   >
                     <img 
                       src={isEmojiOpen ? emojiOn : emoji} 
