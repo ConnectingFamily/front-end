@@ -17,8 +17,8 @@
     "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 
   --color-main: oklch(0.7627 0.156 50.21);
-  --color-sub-1: oklch(0.9703 0.0205 67.58);
-  --color-sub-2: oklch(0.9438 0.0385 66.08);
+  --color-sub-1: #FFE3C7;
+  --color-sub-2: #FFF6ED;
   --color-bg: oklch(0.9994 0.0026 106.45);
   --color-outline: oklch(0.9249 0 0);
   --color-disabled: oklch(0.937 0 0);

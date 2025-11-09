@@ -15,6 +15,8 @@ import AIFeedback from "./pages/AIFeedback";
 import My from "./pages/My";
 import Noti from "./pages/Noti";
 import Menu from "./pages/Menu";
+import Calendar from "./pages/Calendar";
+import AnsweredQuestions from "./pages/AnsweredQuestions";
 
 const App = () => {
   return (
@@ -48,6 +50,11 @@ const App = () => {
           <Route path="/answer" element={<Answer />} />
           {/* ai feedback */}
           <Route path="/ai-feedback" element={<AIFeedback />} />
+
+          {/* calendar */}
+          <Route path="/calendar" element={<Calendar />} />
+          {/* answered questions */}
+          <Route path="/answered-questions" element={<AnsweredQuestions />} />
 
           {/* my page */}
           <Route path="/my-page" element={<My />} />

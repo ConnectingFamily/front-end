@@ -30,12 +30,13 @@ const SubHeader = ({
         {/* 뒤로가기 버튼 */}
         <button onClick={handleBack} className="flex items-center">
           <img src={back} alt="back" width="24px" height="24px" />
-        </button>
-
-        {/* 좌측 텍스트 (있을 때만 표시) */}
+          {/* 좌측 텍스트 (있을 때만 표시) */}
         {leftText && (
           <div className="title text-text pl-[8px]">{leftText}</div>
         )}
+        </button>
+
+        
 
         {/* 우측 텍스트 (있을 때만 표시) */}
         {rightText ? (
