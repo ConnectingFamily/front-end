@@ -1,25 +1,43 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import SubHeader from "../components/layout/SubHeader";
 import CommonButton from "../components/common/CommonButton";
+import type { FamilyMember } from "../api/family";
+import { joinFamily } from "../api/family";
 
 const OnboardJoinConfirm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // TODO: API에서 가족 정보 받아오기
-  const familyData = {
-    name: "햇살같은 우리집",
-    members: [
-      { name: "김미숙", role: "엄마", avatar: "" },
-      { name: "묌묌묌", role: "", avatar: "" },
-      { name: "아빠", role: "", avatar: "" },
-      { name: "동생", role: "", avatar: "" },
-      { name: "동생", role: "", avatar: "" },
-    ],
-  };
+  const familyData = location.state?.familyData;
 
-  const handleConfirm = () => {
-    // TODO: 가족 합류 API 호출
-    navigate("/onboard/profile");
+  useEffect(() => {
+    if (!familyData) {
+      navigate("/onboard/join", { replace: true });
+    }
+  }, [familyData, navigate]);
+
+  if (!familyData) {
+    return null;
+  }
+
+  const members = familyData.members || [];
+
+  const handleConfirm = async () => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await joinFamily(familyData.inviteCode);
+      navigate("/onboard/profile");
+    } catch (error: any) {
+      const errorMessage = error?.response?.message || error?.message || "가족 합류 중 오류가 발생했습니다.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,44 +58,49 @@ const OnboardJoinConfirm = () => {
         <div className="w-[83.58vw] max-w-[350px] bg-sub-2 rounded-[8px] p-[16px]">
           <div className="mb-[3.79vh] flex flex-col items-center">
             <div className="label-bold text-text mb-[12px]">가족 이름</div>
-            <div className="label text-text">{familyData.name}</div>
+            <div className="label text-text">{familyData.familyName}</div>
           </div>
 
           <div>
             <div className="label-bold text-text mb-[8px] text-center">
-              가족 멤버 ({familyData.members.length})
+              가족 멤버 ({members.length})
             </div>
             <div className="flex flex-row justify-center items-end">
-              {familyData.members.map((member, index) => (
+              {members.map((member: FamilyMember, index: number) => (
                 <div
-                  key={index}
+                  key={member.userId}
                   className="flex flex-col items-center gap-y-[4px] relative"
                   style={{
                     marginLeft: index > 0 ? "-20px" : "0",
-                    zIndex: familyData.members.length - index,
+                    zIndex: members.length - index,
                   }}
                 >
                   <div className="w-[18.4vw] h-[18.4vw] max-w-[72px] max-h-[72px] rounded-[16px] bg-outline flex items-center justify-center border-[4px] border-sub-2">
-                    {member.avatar ? (
+                    {member.profileImageUrl ? (
                       <img
-                        src={member.avatar}
-                        alt={member.name}
+                        src={member.profileImageUrl}
+                        alt={member.nickname}
                         className="w-full h-full rounded-[14px] object-cover"
                       />
                     ) : (
                       <div className="body text-sub-text">
-                        {member.name.charAt(0)}
+                        {member.nickname.charAt(0)}
                       </div>
                     )}
                   </div>
-                  <div className="caption text-text text-center whitespace-nowrap">
-                    {member.name}
+                  <div className="body text-text text-center whitespace-nowrap">
+                    {member.nickname}
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
+        {error && (
+          <div className="mt-4 body text-error text-center">
+            {error}
+          </div>
+        )}
       </div>
 
       <div className="w-full px-[20px] pb-[4vh]">
@@ -85,6 +108,7 @@ const OnboardJoinConfirm = () => {
           <CommonButton
             label="맞아요!"
             onClick={handleConfirm}
+            disabled={isLoading}
           />
         </div>
       </div>

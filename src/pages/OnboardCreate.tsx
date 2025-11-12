@@ -2,20 +2,36 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SubHeader from "../components/layout/SubHeader";
 import CommonButton from "../components/common/CommonButton";
+import { createFamily } from "../api/family";
 
 const OnboardCreate = () => {
   const navigate = useNavigate();
   const [familyName, setFamilyName] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const MAX_FAMILY_NAME_LENGTH = 10;
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!familyName.trim()) return;
     
-    // TODO: 가족 생성 API 호출
-    // 생성 성공 시 가족 코드 받아서 다음 페이지로 전달
-    navigate("/onboard/create/complete", {
-      state: { familyName: familyName.trim() },
-    });
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await createFamily(familyName.trim());
+      
+      navigate("/onboard/create/complete", {
+        state: {
+          familyName: response.data.familyName,
+          inviteCode: response.data.inviteCode,
+        },
+      });
+    } catch (error: any) {
+      const errorMessage = error?.response?.message || error?.message || "가족 생성 중 오류가 발생했습니다.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isFormValid = familyName.trim().length > 0;
@@ -42,6 +58,7 @@ const OnboardCreate = () => {
                 const value = e.target.value;
                 if (value.length <= MAX_FAMILY_NAME_LENGTH) {
                   setFamilyName(value);
+                  setError("");
                 }
               }}
               placeholder="우리 가족만의 이름을 지어주세요."
@@ -52,6 +69,11 @@ const OnboardCreate = () => {
               {familyName.length}/{MAX_FAMILY_NAME_LENGTH}
             </div>
           </div>
+          {error && (
+            <div className="mt-2 body text-error">
+              {error}
+            </div>
+          )}
         </div>
       </div>
 
@@ -60,7 +82,7 @@ const OnboardCreate = () => {
           <CommonButton
             label="다음"
             onClick={handleNext}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isLoading}
           />
         </div>
       </div>

@@ -1,16 +1,21 @@
-import { useNavigate } from "react-router-dom";
 import CommonButton from "../components/common/CommonButton";
 import logo from "../../public/icon/logoForLogin.webp";
 import hearts from "../../public/icon/heartToHeart.svg";
 
 const Login = () => {
-  const navigate = useNavigate();
-
   const handleKakaoLogin = () => {
-    // TODO: 카카오 로그인 API 연동
-    // 기존 유저면 -> /home
-    // 신규 유저면 -> /onboard
-    navigate("/onboard");
+    const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
+    
+    if (!KAKAO_CLIENT_ID) {
+      alert("환경 변수가 설정되지 않았습니다. .env 파일을 확인해주세요.");
+      return;
+    }
+    
+    const currentOrigin = window.location.origin;
+    const REDIRECT_URL = `${currentOrigin}/login/oauth2/code/kakao`;
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URL)}&response_type=code`;
+    
+    window.location.href = KAKAO_AUTH_URL;
   };
 
   return (

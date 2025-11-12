@@ -7,6 +7,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const hideLayoutPages = [
     "/",
     "/login",
+    "/login/oauth2/code/kakao",
     "/onboard",
     "/onboard/join",
     "/onboard/join/confirm",
