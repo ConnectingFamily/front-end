@@ -1,4 +1,5 @@
-import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosError } from "axios";
+import type { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { getAccessToken } from "../utils/token";
 
 // 공통 API 응답 타입

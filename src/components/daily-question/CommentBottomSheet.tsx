@@ -1,15 +1,7 @@
 import CommentItem from "./CommentItem";
 import CommentInput from "./CommentInput";
 import EmojiSelector from "./EmojiSelector";
-
-interface Comment {
-  id: number;
-  userName: string;
-  timeAgo: string;
-  emoji?: string;
-  content: string;
-  hasContent: boolean;
-}
+import type { Comment } from "../../types/daily-question";
 
 interface Emoji {
   id: string;

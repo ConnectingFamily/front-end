@@ -26,7 +26,7 @@ const CommentInput = ({
   isEmojiOpen,
   onCommentTextChange,
   onEmojiToggle,
-  onEmojiSelect,
+  onEmojiSelect: _onEmojiSelect, // CommentBottomSheet에서 전달되지만 실제로는 EmojiSelector에서 사용됨
   onRemoveEmoji,
   onSend,
 }: CommentInputProps) => {
