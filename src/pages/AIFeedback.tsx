@@ -4,17 +4,22 @@ import SubHeader from "../components/layout/SubHeader";
 import CommonButton from "../components/common/CommonButton";
 import heartToHeart from "../../public/icon/heartToHeart.svg";
 import CommonModal from "../components/common/CommonModal";
+import { submitFinalAnswer } from "../api/daily-question";
 
 const AIFeedback = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const contentEditableRef = useRef<HTMLDivElement>(null);
   
-  // TODO: API에서 AI 피드백 데이터 받아오기
-  // 현재는 location.state에서 답변을 받아오거나, API 호출
-  const initialAnswer = location.state?.answer || "";
+  const dailyQuestionId = location.state?.dailyQuestionId;
+  const initialAnswer = location.state?.improvedAnswer || location.state?.answer || "";
+  const initialFeedback = location.state?.feedback || [];
   const [userAnswer, setUserAnswer] = useState(initialAnswer);
+  const [aiSuggestions, setAiSuggestions] = useState<string[]>(initialFeedback);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const MAX_LENGTH = 200;
 
   // 현재 contentEditable의 텍스트를 가져오는 함수
@@ -22,10 +27,18 @@ const AIFeedback = () => {
     return contentEditableRef.current?.textContent || userAnswer;
   };
 
-  // 이전 화면(Answer)으로 이동하면서 현재 텍스트 전달
+  // 이전 화면(Answer)으로 이동하면서 원본 답변 및 질문 데이터 전달
   const handleGoBack = () => {
-    const currentAnswer = getCurrentAnswer();
-    navigate("/answer", { state: { answer: currentAnswer } });
+    // API 응답의 originalAnswer를 우선 사용, 없으면 사용자가 작성한 원본 답변 사용
+    const originalAnswer = location.state?.originalAnswer || location.state?.answer || "";
+    navigate("/answer", {
+      state: {
+        answer: originalAnswer,
+        dailyQuestionId: location.state?.dailyQuestionId,
+        questionNumber: location.state?.questionNumber,
+        question: location.state?.question,
+      },
+    });
   };
 
   // 초기값 설정 및 location.state 변경 시에만 업데이트
@@ -34,37 +47,66 @@ const AIFeedback = () => {
     
     // 사용자가 직접 편집 중이 아닐 때만 업데이트
     if (!isFocused) {
-      if (location.state?.answer && location.state.answer !== contentEditableRef.current?.textContent) {
-        setUserAnswer(location.state.answer);
+      const improvedAnswer = location.state?.improvedAnswer;
+      if (improvedAnswer && improvedAnswer !== contentEditableRef.current?.textContent) {
+        setUserAnswer(improvedAnswer);
         if (contentEditableRef.current) {
-          contentEditableRef.current.textContent = location.state.answer;
+          contentEditableRef.current.textContent = improvedAnswer;
         }
       } else if (contentEditableRef.current && !contentEditableRef.current.textContent && initialAnswer) {
         contentEditableRef.current.textContent = initialAnswer;
         setUserAnswer(initialAnswer);
       }
-    }
-  }, [location.state?.answer, initialAnswer]);
-  
-  const aiSuggestions = [
-    "차한잔님은 가족과 다시 가까워지고 싶은 따뜻한 마음을 가지고 있네요.",
-    "아직 대화를 나누지 못했지만, 그 마음 자체가 관계 회복의 시작이에요.",
-    "오늘은 '한마디의 안부'로 문을 열어보세요!",
-  ];
 
+      // feedback 업데이트
+      if (location.state?.feedback && Array.isArray(location.state.feedback)) {
+        setAiSuggestions(location.state.feedback);
+      }
+    }
+  }, [location.state?.improvedAnswer, location.state?.feedback, initialAnswer]);
+
+  // 헤더의 "저장" 버튼 클릭 시
   const handleSave = () => {
     setIsEditModalOpen(true);
   };
 
+  // 헤더 저장 모달의 "저장" 버튼 클릭 시 (API 호출 없이 navigate만)
   const handleConfirmSave = () => {
-    const currentAnswer = getCurrentAnswer();
-    // TODO: 답변 저장 API 호출 (currentAnswer 전달)
-    console.log("저장할 답변:", currentAnswer);
+    setIsEditModalOpen(false);
     navigate("/daily-question");
   };
 
+  // "답변 수정하기" 버튼 클릭 시
   const handleEditAnswer = () => {
-    handleGoBack();
+    setIsSubmitModalOpen(true);
+  };
+
+  // 답변 수정하기 모달의 "저장" 버튼 클릭 시 (API 호출)
+  const handleConfirmSubmit = async () => {
+    if (!dailyQuestionId) {
+      alert("질문 정보가 없습니다.");
+      return;
+    }
+
+    const currentAnswer = getCurrentAnswer();
+    if (!currentAnswer.trim()) {
+      alert("답변을 작성해주세요.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await submitFinalAnswer(dailyQuestionId, currentAnswer);
+      setIsSubmitModalOpen(false);
+      navigate("/daily-question");
+    } catch (error: any) {
+      const errorMessage = error?.response?.message || error?.message || "답변 저장 중 오류가 발생했습니다.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -131,7 +173,7 @@ const AIFeedback = () => {
               {aiSuggestions.map((suggestion, index) => (
                 <div
                   key={index}
-                  className="w-full bg-gradient-to-b from-[#FFF8F0] to-[#FFE5C7] rounded-[8px] p-[12px]"
+                  className="w-full bg-gradient-to-b from-[#FFF8F0] to-[#FFE5C7] rounded-[8px] p-[12px] break-keep break-words"
                 >
                   <div className="label text-text">{suggestion}</div>
                 </div>
@@ -150,6 +192,7 @@ const AIFeedback = () => {
         </div>
       </div>
 
+      {/* 헤더 저장 모달 */}
       {isEditModalOpen && (
         <CommonModal
           title="저장할까요?"
@@ -159,6 +202,24 @@ const AIFeedback = () => {
           cancelLabel="취소"
           onCancelClick={() => setIsEditModalOpen(false)}
         />
+      )}
+
+      {/* 답변 수정하기 모달 */}
+      {isSubmitModalOpen && (
+        <CommonModal
+          title="저장할까요?"
+          desc="지금 저장한 답변은 다시 수정할 수 없어요."
+          confirmLabel={isLoading ? "저장 중..." : "저장"}
+          onConfirmClick={handleConfirmSubmit}
+          cancelLabel="취소"
+          onCancelClick={() => setIsSubmitModalOpen(false)}
+        />
+      )}
+
+      {error && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 px-5 py-3 bg-error/10 rounded-[8px] body text-error z-[1000]">
+          {error}
+        </div>
       )}
     </div>
   );
