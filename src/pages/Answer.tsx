@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import SubHeader from "../components/layout/SubHeader";
+import { createDraftAnswer } from "../api/daily-question";
 
 const Answer = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [answer, setAnswer] = useState(location.state?.answer || "");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const MAX_LENGTH = 200;
 
   // location.state에서 답변을 받아온 경우 초기값 설정
@@ -15,25 +18,61 @@ const Answer = () => {
     }
   }, [location.state]);
 
-  // TODO: API에서 질문 데이터 받아오기
-  const questionData = {
-    questionNumber: 1,
-    question: "가족과 최근 나눴던 대화 중 가장 기억에 남는 순간은 언제인가요?",
+  // location.state에서 질문 데이터 받아오기
+  const questionData = location.state || {
+    questionNumber: 0,
+    question: "",
+    dailyQuestionId: 0,
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!answer.trim()) {
-      // TODO: 답변을 작성해주세요 알림
+      alert("답변을 작성해주세요.");
       return;
     }
-    // TODO: 답변 저장 API 호출
-    // 저장 성공 시
-    navigate("/ai-feedback", { state: { answer } });
+
+    if (!questionData.dailyQuestionId) {
+      alert("질문 정보가 없습니다.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await createDraftAnswer(questionData.dailyQuestionId, answer);
+      
+      navigate("/ai-feedback", {
+        state: {
+          dailyQuestionId: questionData.dailyQuestionId,
+          questionNumber: questionData.questionNumber,
+          question: questionData.question,
+          answer: answer, // 사용자가 작성한 원본 답변
+          originalAnswer: response.data.originalAnswer, // API가 반환한 원본 답변
+          improvedAnswer: response.data.improvedAnswer,
+          feedback: response.data.feedback,
+        },
+      });
+    } catch (error: any) {
+      const errorMessage = error?.response?.message || error?.message || "AI 피드백을 불러오는 중 오류가 발생했습니다.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="w-full h-screen bg-bg flex flex-col">
-      <SubHeader rightText="다음" onBackClick={() => navigate("/daily-question")} onRightClick={handleNext} />
+      <SubHeader 
+        rightText={isLoading ? "처리 중..." : "다음"} 
+        onBackClick={() => navigate("/daily-question")} 
+        onRightClick={handleNext}
+      />
+      {error && (
+        <div className="px-5 pt-2 body text-error">
+          {error}
+        </div>
+      )}
 
       <div className="flex-1 flex flex-col overflow-y-auto">
         {/* 질문 카드 */}
