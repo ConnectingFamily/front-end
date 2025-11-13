@@ -2,12 +2,15 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import SubHeader from "../components/layout/SubHeader";
 import CommonButton from "../components/common/CommonButton";
+import { updateProfile } from "../api/user";
 import plus from "../../public/icon/plus.svg";
 
 const OnboardProfile = () => {
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const MAX_NICKNAME_LENGTH = 5;
 
@@ -26,9 +29,34 @@ const OnboardProfile = () => {
     }
   };
 
-  const handleComplete = () => {
-    // TODO: 프로필 정보 저장 API 호출
-    navigate("/home");
+  const handleComplete = async () => {
+    if (!nickname.trim() && !profileImage) {
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const updateRequest: { nickname?: string; profileImageUrl?: string } = {};
+      
+      if (nickname.trim()) {
+        updateRequest.nickname = nickname.trim();
+      }
+      
+      if (profileImage) {
+        updateRequest.profileImageUrl = profileImage;
+      }
+
+      await updateProfile(updateRequest);
+
+      navigate("/home");
+    } catch (error: any) {
+      const errorMessage = error?.response?.message || error?.message || "프로필 저장 중 오류가 발생했습니다.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isFormValid = nickname.trim().length > 0;
@@ -89,6 +117,11 @@ const OnboardProfile = () => {
               {nickname.length}/{MAX_NICKNAME_LENGTH}
             </div>
           </div>
+          {error && (
+            <div className="mt-2 body text-error">
+              {error}
+            </div>
+          )}
         </div>
       </div>
 
@@ -97,7 +130,7 @@ const OnboardProfile = () => {
           <CommonButton
             label={isFormValid ? "다음" : "완료"}
             onClick={handleComplete}
-            disabled={!isFormValid && !profileImage}
+            disabled={(!isFormValid && !profileImage) || isLoading}
           />
         </div>
       </div>

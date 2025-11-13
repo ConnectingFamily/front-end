@@ -17,6 +17,7 @@ import Noti from "./pages/Noti";
 import Menu from "./pages/Menu";
 import Calendar from "./pages/Calendar";
 import AnsweredQuestions from "./pages/AnsweredQuestions";
+import KakaoOAuthCallback from "./components/auth/KakaoOAuthCallback";
 
 const App = () => {
   return (
@@ -27,6 +28,8 @@ const App = () => {
           <Route path="/" element={<Splash />} />
           {/* login */}
           <Route path="/login" element={<Login />} />
+          {/* kakao oauth callback */}
+          <Route path="/login/oauth2/code/kakao" element={<KakaoOAuthCallback />} />
           {/* onboard */}
           <Route path="/onboard" element={<Onboard />} />
           <Route path="/onboard/join" element={<OnboardJoin />} />

@@ -2,24 +2,37 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SubHeader from "../components/layout/SubHeader";
 import CommonButton from "../components/common/CommonButton";
+import { searchFamilyByInviteCode } from "../api/family";
 
 const OnboardJoin = () => {
   const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = () => {
-    if (!code.trim()) { // 추후 백엔드 api 연동시 에러코드 확인 후 핸들링 예정
+  const handleSubmit = async () => {
+    if (!code.trim()) {
       setError("코드가 정확한지 다시 한 번 확인해주세요.");
       return;
     }
 
-    // TODO: 초대 코드 검증 API 호출
-    // 검증 성공 시
-    navigate("/onboard/join/confirm");
-    
-    // 검증 실패 시
-    // setError("코드가 정확한지 다시 한 번 확인해주세요.");
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await searchFamilyByInviteCode(code.trim());
+      
+      navigate("/onboard/join/confirm", {
+        state: {
+          familyData: response.data,
+        },
+      });
+    } catch (error: any) {
+      const errorMessage = error?.response?.message || error?.message || "코드가 정확한지 다시 한 번 확인해주세요.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -54,7 +67,7 @@ const OnboardJoin = () => {
             onClick={handleSubmit}
             className="w-[18.46vw] max-w-[72px] h-11"
             textColor="text-[#ffffff] label-bold"
-            disabled={!code.trim()}
+            disabled={!code.trim() || isLoading}
           />
         </div>
         {error && (

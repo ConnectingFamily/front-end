@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import SubHeader from "../components/layout/SubHeader";
 import CommonButton from "../components/common/CommonButton";
@@ -8,15 +8,20 @@ const OnboardCreateComplete = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // TODO: API에서 가족 코드 받아오기 (현재는 location state 또는 API 호출)
-  const familyCode = "zDJKFOEJ23"; // 임시 더미 코드
-  const familyName = location.state?.familyName || "햇살같은 우리집"; // OnboardCreate에서 전달받은 가족 이름
-  
+  const familyName = location.state?.familyName || "";
+  const inviteCode = location.state?.inviteCode || "";
+
+  useEffect(() => {
+    if (!familyName || !inviteCode) {
+      navigate("/onboard/create", { replace: true });
+    }
+  }, [familyName, inviteCode, navigate]);
+
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(familyCode);
+      await navigator.clipboard.writeText(inviteCode);
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -52,7 +57,7 @@ const OnboardCreateComplete = () => {
           <div className="flex flex-row gap-[8px]">
             <input
               type="text"
-              value={familyCode}
+              value={inviteCode}
               readOnly
               className="flex-1 h-11 px-3 border border-outline rounded body bg-bg focus:outline-none"
             />
