@@ -4,6 +4,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // API 서버 URL (Vercel 환경 변수에서 가져오거나 기본값 사용)
   const apiUrl = process.env.VITE_API_URL;
   
+  // 디버깅 로그 추가
+  console.log('Environment:', {
+    VITE_API_URL: process.env.VITE_API_URL,
+    apiUrl,
+    NODE_ENV: process.env.NODE_ENV,
+  });
+  
   // vercel.json rewrites로 path가 쿼리 파라미터로 전달됨
   // /api/auth/kakao/login → /api/proxy?path=auth/kakao/login
   const pathParam = req.query.path;
@@ -17,9 +24,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   
   console.log('Proxy request:', {
     method: req.method,
+    url: req.url,
     pathParam,
     path,
     targetUrl: finalUrl,
+    query: req.query,
   });
 
   try {
