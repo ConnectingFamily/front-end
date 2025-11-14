@@ -1,14 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // API 서버 URL
-  const apiUrl = process.env.VITE_API_URL;
+  // API 서버 URL (Vercel 환경 변수에서 가져오거나 기본값 사용)
+  const apiUrl = process.env.VITE_API_URL || "http://localhost:8080";
   
   // 요청 경로 추출
-  // /api/proxy/auth/kakao/login -> /api/auth/kakao/login
-  const path = req.url?.startsWith('/api/proxy') 
-    ? req.url.replace('/api/proxy', '') 
-    : req.url || '';
+  // vercel.json의 rewrites로 /api/:path*가 /api/proxy로 라우팅됨
+  // 원래 경로는 req.url에 그대로 전달됨 (예: /api/auth/kakao/login)
+  const path = req.url || '';
   
   const targetUrl = `${apiUrl}${path}`;
 
