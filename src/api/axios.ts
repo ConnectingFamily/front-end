@@ -12,8 +12,20 @@ export interface ApiResponse<T = any> {
 }
 
 // axios 인스턴스 생성
+// 프로덕션에서는 Vercel Functions 프록시 사용 (HTTPS → HTTP 문제 해결)
+// 로컬 개발 환경에서는 직접 API 서버 호출
+const getBaseURL = () => {
+  // 프로덕션 환경 (Vercel)
+  if (import.meta.env.PROD) {
+    // VITE_API_URL이 설정되어 있으면 사용, 없으면 프록시 사용
+    return import.meta.env.VITE_API_URL || "/api/proxy";
+  }
+  // 개발 환경
+  return import.meta.env.VITE_API_URL || "http://localhost:8080";
+};
+
 const apiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
+  baseURL: getBaseURL(),
   headers: {
     "Content-Type": "application/json",
   },
