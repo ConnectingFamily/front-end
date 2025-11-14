@@ -66,7 +66,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     console.log('Fetch response received, status:', response.status);
     const data = await response.json();
-    console.log('Response data parsed');
+    console.log('Response data parsed:', data);
+    
+    // 백엔드 에러 로깅
+    if (response.status >= 400) {
+      console.error('Backend error response:', {
+        status: response.status,
+        data: data,
+      });
+    }
     
     // 응답 헤더 복사
     res.setHeader('Content-Type', 'application/json');
