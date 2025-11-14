@@ -6,8 +6,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   
   // 요청 경로 추출
   // vercel.json의 rewrites로 /api/:path*가 /api/proxy로 라우팅됨
-  // 원래 경로는 req.url에 그대로 전달됨 (예: /api/auth/kakao/login)
-  const path = req.url || '';
+  // req.url에는 원래 경로가 포함됨 (예: /api/auth/kakao/login)
+  // 또는 /api/proxy로 올 수도 있으므로 확인 필요
+  let path = req.url || '';
+  
+  // /api/proxy로 시작하면 제거 (rewrites로 인한 중복 방지)
+  if (path.startsWith('/api/proxy')) {
+    path = path.replace('/api/proxy', '');
+  }
+  
+  // 경로가 비어있으면 /api로 시작하도록 (일반적으로는 이미 /api로 시작함)
+  if (!path.startsWith('/api')) {
+    path = `/api${path}`;
+  }
   
   const targetUrl = `${apiUrl}${path}`;
 

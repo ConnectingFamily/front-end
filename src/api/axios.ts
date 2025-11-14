@@ -15,9 +15,11 @@ export interface ApiResponse<T = any> {
 // 프로덕션에서는 Vercel Functions 프록시 사용 (HTTPS → HTTP 문제 해결)
 // 로컬 개발 환경에서는 직접 API 서버 호출
 const getBaseURL = () => {
-  // 프로덕션 환경 (Vercel) - 무조건 프록시 사용
+  // 프로덕션 환경 (Vercel)
+  // vercel.json의 rewrites가 /api/:path*를 /api/proxy로 라우팅
+  // 따라서 baseURL은 /api로 설정하면 됨
   if (import.meta.env.PROD) {
-    return "/api/proxy";
+    return "/api";
   }
   // 개발 환경 - 직접 API 서버 호출
   return import.meta.env.VITE_API_URL || "http://localhost:8080";
