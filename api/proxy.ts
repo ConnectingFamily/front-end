@@ -1,8 +1,17 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // API 서버 URL (Vercel 환경 변수에서 가져오거나 기본값 사용)
-  const apiUrl = process.env.VITE_API_URL || "http://localhost:8080";
+  // API 서버 URL (Vercel 환경 변수에서 가져옴 - 필수)
+  const apiUrl = process.env.VITE_API_URL;
+  
+  if (!apiUrl) {
+    console.error('VITE_API_URL environment variable is not set');
+    return res.status(500).json({
+      isSuccess: false,
+      message: 'Server configuration error',
+      code: 'CONFIG_ERROR'
+    });
+  }
   
   // 요청 경로 추출
   // vercel.json의 rewrites로 /api/:path*가 /api/proxy로 라우팅됨
