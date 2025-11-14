@@ -2,11 +2,12 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // API 서버 URL (Vercel 환경 변수에서 가져오거나 기본값 사용)
-  const apiUrl = process.env.VITE_API_URL || "http://34.158.222.233:8080";
+  const apiUrl = process.env.VITE_API_URL;
   
-  // Catch-all 라우팅: /api/auth/kakao/login → req.query.path = ['auth', 'kakao', 'login']
-  const pathArray = req.query.path as string[];
-  const path = Array.isArray(pathArray) ? pathArray.join('/') : '';
+  // vercel.json rewrites로 path가 쿼리 파라미터로 전달됨
+  // /api/auth/kakao/login → /api/proxy?path=auth/kakao/login
+  const pathParam = req.query.path;
+  const path = typeof pathParam === 'string' ? pathParam : (Array.isArray(pathParam) ? pathParam.join('/') : '');
   const targetUrl = `${apiUrl}/api/${path}`;
 
   // 쿼리 파라미터 추가 (path 제외)
@@ -16,7 +17,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   
   console.log('Proxy request:', {
     method: req.method,
-    pathArray,
+    pathParam,
     path,
     targetUrl: finalUrl,
   });
