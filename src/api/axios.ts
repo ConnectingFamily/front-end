@@ -17,9 +17,9 @@ export interface ApiResponse<T = any> {
 const getBaseURL = () => {
   // 프로덕션 환경 (Vercel)
   // vercel.json의 rewrites가 /api/:path*를 /api/proxy로 라우팅
-  // 따라서 baseURL은 /api로 설정하면 됨
+  // API 호출 경로가 이미 /api/...로 시작하므로 baseURL은 빈 문자열
   if (import.meta.env.PROD) {
-    return "/api";
+    return "";
   }
   // 개발 환경 - 직접 API 서버 호출
   return import.meta.env.VITE_API_URL || "http://localhost:8080";
