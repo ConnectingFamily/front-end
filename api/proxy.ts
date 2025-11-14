@@ -4,6 +4,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // API 서버 URL (Vercel 환경 변수에서 가져오거나 기본값 사용)
   const apiUrl = process.env.VITE_API_URL;
   
+  // apiUrl이 없으면 즉시 에러 반환
+  if (!apiUrl) {
+    console.error('API URL is not configured');
+    return res.status(500).json({
+      isSuccess: false,
+      message: 'API URL is not configured',
+      code: 'CONFIG_ERROR'
+    });
+  }
+  
   // 디버깅 로그 추가
   console.log('Environment:', {
     VITE_API_URL: process.env.VITE_API_URL,
@@ -33,13 +43,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // 요청 본문 처리
+    console.log('Processing request body...');
     let body: string | undefined;
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       if (req.body) {
         body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+        console.log('Request body prepared, length:', body?.length);
       }
     }
 
+    console.log('Calling fetch to:', finalUrl);
     const response = await fetch(finalUrl, {
       method: req.method,
       headers: {
@@ -51,7 +64,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       body,
     });
 
+    console.log('Fetch response received, status:', response.status);
     const data = await response.json();
+    console.log('Response data parsed');
     
     // 응답 헤더 복사
     res.setHeader('Content-Type', 'application/json');
