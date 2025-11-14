@@ -1,27 +1,25 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // API 서버 URL (Vercel 환경 변수에서 가져옴 - 필수)
-  const apiUrl = process.env.VITE_API_URL;
+  // API 서버 URL (Vercel 환경 변수에서 가져오거나 기본값 사용)
+  const apiUrl = process.env.VITE_API_URL || "http://34.158.222.233:8080";
   
-  if (!apiUrl) {
-    console.error('VITE_API_URL environment variable is not set');
-    return res.status(500).json({
-      isSuccess: false,
-      message: 'Server configuration error',
-      code: 'CONFIG_ERROR'
-    });
-  }
-  
-  // 요청 경로 추출
-  // vercel.json의 rewrites로 /api/:path*가 /api/proxy로 라우팅됨
-  // req.url에는 원래 경로가 포함됨 (예: /api/auth/kakao/login)
-  const path = req.url || '';
-  const targetUrl = `${apiUrl}${path}`;
+  // Catch-all 라우팅: /api/auth/kakao/login → req.query.path = ['auth', 'kakao', 'login']
+  const pathArray = req.query.path as string[];
+  const path = Array.isArray(pathArray) ? pathArray.join('/') : '';
+  const targetUrl = `${apiUrl}/api/${path}`;
 
-  // 쿼리 파라미터 추가
-  const queryString = new URLSearchParams(req.query as Record<string, string>).toString();
+  // 쿼리 파라미터 추가 (path 제외)
+  const { path: _, ...queryParams } = req.query;
+  const queryString = new URLSearchParams(queryParams as Record<string, string>).toString();
   const finalUrl = queryString ? `${targetUrl}?${queryString}` : targetUrl;
+  
+  console.log('Proxy request:', {
+    method: req.method,
+    pathArray,
+    path,
+    targetUrl: finalUrl,
+  });
 
   try {
     // 요청 본문 처리
@@ -50,7 +48,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     res.status(response.status).json(data);
   } catch (error: any) {
-    console.error('Proxy error:', error);
+    console.error('Proxy error:', {
+      message: error.message,
+      stack: error.stack,
+      targetUrl: finalUrl,
+    });
     res.status(500).json({ 
       isSuccess: false,
       message: error.message || 'Proxy error',
