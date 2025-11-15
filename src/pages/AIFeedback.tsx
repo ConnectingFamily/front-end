@@ -78,7 +78,8 @@ const AIFeedback = () => {
 
   // "답변 수정하기" 버튼 클릭 시
   const handleEditAnswer = () => {
-    setIsSubmitModalOpen(true);
+    // setIsSubmitModalOpen(true);
+    handleGoBack();
   };
 
   // 답변 수정하기 모달의 "저장" 버튼 클릭 시 (API 호출)
