@@ -111,9 +111,26 @@ const DailyQuestion = () => {
   }
 
   if (error) {
+    // 401 에러인 경우 로그인 페이지로 리다이렉트
+    // (axios interceptor에서도 처리하지만, 여기서도 확인)
+    const errorStatus = typeof error === 'object' && error !== null && 'status' in error 
+      ? (error as { status?: number }).status 
+      : null;
+    
+    if (errorStatus === 401) {
+      window.location.href = "/login";
+      return null;
+    }
+
+    const errorMessage = typeof error === 'string' 
+      ? error 
+      : (typeof error === 'object' && error !== null && 'message' in error
+          ? (error as { message: string }).message
+          : String(error));
+
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center gap-4">
-        <div className="body text-error">{error}</div>
+        <div className="body text-error">{errorMessage}</div>
         <CommonButton
           label="다시 시도"
           onClick={() => window.location.reload()}

@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import type { AxiosInstance, InternalAxiosRequestConfig } from "axios";
-import { getAccessToken } from "../utils/token";
+import { getAccessToken, clearTokens } from "../utils/token";
 
 // 공통 API 응답 타입
 export interface ApiResponse<T = any> {
@@ -62,6 +62,17 @@ apiClient.interceptors.response.use(
   (error: AxiosError) => {
     // 네트워크 에러 또는 기타 에러 처리
     if (error.response) {
+      // 401 Unauthorized: 인증이 필요한 경우 로그인 페이지로 리다이렉트
+      if (error.response.status === 401) {
+        // 토큰 제거
+        clearTokens();
+        
+        // 로그인 페이지로 리다이렉트 (현재 페이지가 로그인 페이지가 아닐 때만)
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+      }
+      
       // 서버에서 응답을 받았지만 에러 상태 코드
       const data = error.response.data as ApiResponse;
       if (data && typeof data === "object" && "message" in data) {

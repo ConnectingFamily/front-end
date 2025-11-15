@@ -5,7 +5,7 @@ import type { FamilyMember, QuestionData } from "../types/daily-question";
 
 export const useDailyQuestion = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | { message: string; status?: number }>("");
   const [questionData, setQuestionData] = useState<QuestionData>({
     dailyQuestionId: 0,
     questionNumber: 0,
@@ -54,7 +54,14 @@ export const useDailyQuestion = () => {
           error?.response?.message ||
           error?.message ||
           "질문을 불러오는 중 오류가 발생했습니다.";
-        setError(errorMessage);
+        const errorStatus = error?.status || error?.response?.status;
+        
+        // status가 있으면 객체로, 없으면 문자열로 저장
+        if (errorStatus) {
+          setError({ message: errorMessage, status: errorStatus });
+        } else {
+          setError(errorMessage);
+        }
       } finally {
         setIsLoading(false);
       }
