@@ -85,3 +85,14 @@ export const submitFinalAnswer = async (
   return response.data;
 };
 
+export interface DeleteAnswerResponse extends ApiResponse<string> {}
+
+export const deleteAnswer = async (
+  dailyQuestionId: number
+): Promise<DeleteAnswerResponse> => {
+  const response = await apiClient.delete<DeleteAnswerResponse>(
+    `/api/daily-questions/${dailyQuestionId}/answers`
+  );
+  return response.data;
+};
+

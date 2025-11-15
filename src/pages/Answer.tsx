@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import SubHeader from "../components/layout/SubHeader";
-import { createDraftAnswer } from "../api/daily-question";
+import { createDraftAnswer, deleteAnswer } from "../api/daily-question";
 
 const Answer = () => {
   const navigate = useNavigate();
@@ -61,11 +61,24 @@ const Answer = () => {
     }
   };
 
+  const handleBack = async () => {
+    // 답변이 작성되어 있고 dailyQuestionId가 있으면 DELETE API 호출
+    if (answer.trim() && questionData.dailyQuestionId) {
+      try {
+        await deleteAnswer(questionData.dailyQuestionId);
+      } catch (error) {
+        // 에러가 발생해도 navigate는 진행
+        console.error("답변 삭제 중 오류:", error);
+      }
+    }
+    navigate("/daily-question");
+  };
+
   return (
     <div className="w-full h-screen bg-bg flex flex-col">
       <SubHeader 
         rightText={isLoading ? "처리 중..." : "다음"} 
-        onBackClick={() => navigate("/daily-question")} 
+        onBackClick={handleBack} 
         onRightClick={handleNext}
       />
       {error && (
